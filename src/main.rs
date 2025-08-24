@@ -1,3 +1,9 @@
+// struct Vec<T> {
+//     ptr: *mut T,  // points to heap buffer
+//     len: usize,   // how many T are initialized
+//     cap: usize,   // how many T the buffer can hold
+// }
+
 struct MyVec<T> {
     data: Box<[T]>
 }
