@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2024"
 
 [[bin]]
+name = "be_le"
+path = "src/be_le.rs"
+
+[[bin]]
 name = "hashmap_builder"
 path = "src/hashmap_builder.rs"
 
