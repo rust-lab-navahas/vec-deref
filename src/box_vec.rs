@@ -23,12 +23,12 @@ impl<T> MyVec<T> {
 }
 
 fn main() {
-    let mv = MyVec::new(vec![10, 20, 30]);
-
-    let mut slice = mv.as_slice();
-    println!("slice: {:?}", slice);
-    println!("len: {}", slice.len());
-    println!("first: {:?}", slice.get(0));
-
-    slice[0] += 1
+    //let mv = MyVec::new(vec![10, 20, 30]);
+    //
+    //let mut slice = mv.as_slice();
+    //println!("slice: {:?}", slice);
+    //println!("len: {}", slice.len());
+    //println!("first: {:?}", slice.get(0));
+    //
+    //slice[0] += 1
 }
