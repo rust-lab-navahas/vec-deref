@@ -4,20 +4,51 @@
 //     cap: usize,   // how many T the buffer can hold
 // }
 
+use std::ops::{Deref, DerefMut};
+
+#[derive(Debug, Clone, PartialEq)]
 struct MyVec<T> {
-    data: Box<[T]>
+    data: Box<[T]>,
 }
 
 impl<T> MyVec<T> {
     fn new(v: Vec<T>) -> Self {
-        Self { data: v.into_boxed_slice() }
+        Self {
+            data: v.into_boxed_slice(),
+        }
     }
 
-    fn as_slice(&self) -> &[T] {
+    // These methods would be redundant thanks to Deref/DerefMut:
+    // With Deref implemented, MyVec automatically gains access to all slice methods
+    // No need to manually implement len(), get(), chunks(), reverse(), etc.
+
+    // fn as_slice(&self) -> &[T] {
+    //     &self.data
+    // }
+    //
+    // fn as_slice_mut(&mut self) -> &mut [T] {
+    //     &mut self.data
+    // }
+    //
+    // fn len(&self) -> usize {
+    //     self.data.len()
+    // }
+}
+
+// Implementing Deref allows MyVec to automatically "dereference" to a slice [A]
+// This enables ergonomic access to all slice methods without manual implementation
+impl<WhateverTypeThisIs> Deref for MyVec<WhateverTypeThisIs> {
+    type Target = [WhateverTypeThisIs];
+
+    fn deref(&self) -> &Self::Target {
         &self.data
     }
+}
 
-    fn as_slice_mut(&mut self) -> &mut [T] {
+// DerefMut allows mutable access to slice methods
+// This enables calling mutating methods like reverse() directly on MyVec
+impl<WhateverTypeThisIs> DerefMut for MyVec<WhateverTypeThisIs> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.data
     }
 }
@@ -25,10 +56,16 @@ impl<T> MyVec<T> {
 fn main() {
     let mv = MyVec::new(vec![10, 20, 30]);
 
-    let mut slice = mv.as_slice();
-    println!("slice: {:?}", slice);
-    println!("len: {}", slice.len());
-    println!("first: {:?}", slice.get(0));
+    // we can call slice methods directly on MyVec
+    println!("slice: {:?}", *&mv);
+    // [T]::len() through Deref
+    println!("len: {}", mv.len());
+    // [T]::get() through Deref
+    println!("first: {:?}", mv.get(0));
+    // [T]::chunks() through Deref
+    println!("slice: {:?}", mv.chunks(2));
 
-    slice[0] += 1
+    // Thanks to DerefMut, we can call mutating slice methods:
+    let mut vm = mv.clone();
+    vm.reverse(); // Uses [T]::reverse() through DerefMut
 }
