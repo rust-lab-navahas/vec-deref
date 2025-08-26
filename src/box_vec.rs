@@ -53,6 +53,26 @@ impl<WhateverTypeThisIs> DerefMut for MyVec<WhateverTypeThisIs> {
     }
 }
 
+impl<T> AsRef<[T]> for MyVec<T> {
+    fn as_ref(&self) -> &[T] { &*self }
+}
+
+impl<T> AsMut<[T]> for MyVec<T> {
+    fn as_mut(&mut self) -> &mut [T] { &mut *self }
+}
+
+fn deref_iterator() {
+    println!("\n========> DEREF ITERATOR");
+    let mut mv = MyVec::new(vec![3, 1, 2]);
+    // slice method via DerefMut
+    mv.sort();
+    // indexing via DerefMut + IndexMut on [T]
+    mv[0] += 10;
+    // range indexing via Deref
+    let head = &mv[..3];
+    println!("{:?}", head);
+}
+
 fn main() {
     let mv = MyVec::new(vec![10, 20, 30]);
 
@@ -68,4 +88,6 @@ fn main() {
     // Thanks to DerefMut, we can call mutating slice methods:
     let mut vm = mv.clone();
     vm.reverse(); // Uses [T]::reverse() through DerefMut
+    
+    deref_iterator();
 }
